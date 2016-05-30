@@ -6,6 +6,7 @@ from flask import jsonify
 def json(f):
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
+        import pdb; pdb.set_trace()
         rv = f(*args, **kwargs)
         status_or_headers = None
         headers = None

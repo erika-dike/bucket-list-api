@@ -6,11 +6,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import NotFound
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
+from errors import ValidationError
 
 db = SQLAlchemy()
 
 
 class User(db.Model):
+    """Users table"""
+
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True)
@@ -49,12 +52,22 @@ class User(db.Model):
 
     def to_json(self):
         return {
-            'url': self.get_url,
+            'url': self.get_url(),
             'name': self.name
         }
 
+    def from_json(self, json):
+        try:
+            self.username = json['username']
+            self.password_hash = json['password']
+        except KeyError as e:
+            raise ValidationError('Missing: ' + e.args[0])
+        return self
+
 
 class BucketList(db.Model):
+    """Bucket list table"""
+
     __tablename__ = 'bucketlist'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25), index=True)
@@ -63,14 +76,54 @@ class BucketList(db.Model):
         'bucketlist_item', lazy='joined'), cascade='all, delete-orphan',
         lazy='dynamic')
     date_created = db.Column(db.DateTime)
+    date_modified = db.Column(db.DateTime)
+
+    def get_url(self):
+        return url_for('api.get_bucketlist', id=self.id, _external=True)
+
+    def to_json(self):
+        items = [item.to_json() for item in self.items]
+        return {
+            'id': self.id,
+            'name': self.name,
+            'items': items,
+            'date_created': self.date_created,
+            'date_modified': self.date_modified,
+            'created_by': User.query.get(self.creator_id).username,
+            'bucketlist_url': self.get_url()
+        }
+
+    def from_json(self, json):
+        try:
+            self.name = json['name']
+        except KeyError as e:
+            raise ValidationError('Invalid name: missing ' + e.args[0])
+        return self
 
 
 class BucketListItem(db.Model):
+    """Bucket list item table"""
+
     __tablename__ = 'bucketlist_item'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), index=True)
-    description = db.Column(db.Text, default="")
     date_created = db.Column(db.DateTime)
     date_modified = db.Column(db.DateTime)
     done = db.Column(db.Boolean, default=False)
     bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucketlist.id'))
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'date_created': self.date_created,
+            'date_modified': self.date_modified,
+            'done': self.done
+        }
+
+    def from_json(self, json):
+        try:
+            self.name = json['name']
+        except KeyError as e:
+            raise ValidationError('Invalid name: missing ' + e.args[0])
+        return self

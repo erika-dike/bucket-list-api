@@ -1,0 +1,5 @@
+# Byte-compiled/optimized
+*.pyc
+
+# temp
+tests/

@@ -1,13 +1,13 @@
 """empty message
 
-Revision ID: f8df7150653d
+Revision ID: d9dc2b69643f
 Revises: None
-Create Date: 2016-05-29 21:28:26.766097
+Create Date: 2016-05-29 23:55:19.616889
 
 """
 
 # revision identifiers, used by Alembic.
-revision = 'f8df7150653d'
+revision = 'd9dc2b69643f'
 down_revision = None
 
 from alembic import op
@@ -36,7 +36,6 @@ def upgrade():
     op.create_table('bucketlist_item',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=250), nullable=True),
-    sa.Column('description', sa.Text(), nullable=True),
     sa.Column('date_created', sa.DateTime(), nullable=True),
     sa.Column('date_modified', sa.DateTime(), nullable=True),
     sa.Column('done', sa.Boolean(), nullable=True),
