@@ -112,13 +112,20 @@ class BucketListItem(db.Model):
     done = db.Column(db.Boolean, default=False)
     bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucketlist.id'))
 
+    def get_url(self):
+        return url_for('api.get_bucketlist_item',
+                       id=self.bucketlist_id,
+                       item_id=self.id,
+                       _external=True)
+
     def to_json(self):
         return {
             'id': self.id,
             'name': self.name,
             'date_created': self.date_created,
             'date_modified': self.date_modified,
-            'done': self.done
+            'done': self.done,
+            'item_url': self.get_url()
         }
 
     def from_json(self, json):

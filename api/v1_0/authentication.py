@@ -27,7 +27,7 @@ def register():
     user = User(username=username, password=password)
     db.session.add(user)
     db.session.commit()
-    return jsonify({'user': user.username}), 201, {'Location': user.get_url()}
+    return user, 201, {'Location': user.get_url()}
 
 
 @api.route('/users/<int:id>', methods=['GET'])
