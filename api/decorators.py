@@ -1,6 +1,6 @@
 import functools
 
-from flask import jsonify
+from flask import jsonify, request, url_for
 
 
 def json(f):
@@ -22,3 +22,42 @@ def json(f):
             rv.headers.extend(headers)
         return rv
     return wrapped
+
+
+def paginate(max_per_page=100):
+    def decorator(f):
+        @functools.wraps(f)
+        def wrapped(*args, **kwargs):
+            import pdb; pdb.set_trace()
+            page = request.args.get('page', 1, type=int)
+            per_page = min(request.args.get('limit', max_per_page,
+                                            type=int), max_per_page)
+            query = f(*args, **kwargs)
+            p = query.paginate(page, per_page)
+            content = p.items
+            pages = {'page': page, 'per_page': per_page,
+                     'total': p.total, 'pages': p.pages}
+            if p.has_prev:
+                pages['prev'] = url_for(request.endpoint, page=p.prev_num,
+                                        per_page=per_page,
+                                        _external=True, **kwargs)
+            else:
+                pages['prev'] = None
+            if p.has_next:
+                pages['next'] = url_for(request.endpoint, page=p.next_num,
+                                        per_page=per_page,
+                                        _external=True, **kwargs)
+            else:
+                pages['next'] = None
+            pages['first'] = url_for(request.endpoint, page=1,
+                                     per_page=per_page, _external=True,
+                                     **kwargs)
+            pages['last'] = url_for(request.endpoint, pages=p.pages,
+                                    per_page=per_page, _external=True,
+                                    **kwargs)
+            return jsonify({
+                'meta': pages,
+                'bucketlists': [each.to_json() for each in content]
+            })
+        return wrapped
+    return decorator

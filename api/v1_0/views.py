@@ -5,7 +5,7 @@ from flask import g, url_for, request
 import errors
 from ..auth import auth
 from api import api
-from ..decorators import json
+from ..decorators import json, paginate
 from ..models import db, User, BucketList, BucketListItem
 
 
@@ -30,8 +30,10 @@ def create_bucketlist():
 
 @api.route('/bucketlists/', methods=['GET'])
 @auth.login_required
+@paginate()
 def get_bucketlists():
-    return BucketList.query.all()
+    import pdb; pdb.set_trace()
+    return BucketList.query
 
 
 @api.route('/bucketlists/<int:id>', methods=['GET'])
@@ -76,7 +78,7 @@ def create_bucketlist_item(id):
     db.session.add(bucketlist_item)
     db.session.add(bucketlist)
     db.session.commit()
-    return {}, 201
+    return bucketlist_item, 201, {'Location': bucketlist_item.get_url()}
 
 
 @api.route('/bucketlists/<int:id>/items/<int:item_id>', methods=['GET'])
