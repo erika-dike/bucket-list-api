@@ -13,6 +13,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(
         basedir, 'bucketlistdb.sqlite')
     USE_TOKEN_AUTH = True
+    DEFAULT_PER_PAGE = 20
+    MAX_PER_PAGE = 100
 
 
 class DevelopmentConfig(Config):

@@ -13,7 +13,6 @@ from ..models import db, User, BucketList, BucketListItem
 @auth.login_required
 @json
 def create_bucketlist():
-    import pdb; pdb.set_trace()
     bucketlist = BucketList().from_json(request.json)
     now = datetime.datetime.now()
     bucketlist.date_created = now
@@ -32,8 +31,11 @@ def create_bucketlist():
 @auth.login_required
 @paginate()
 def get_bucketlists():
-    import pdb; pdb.set_trace()
-    return BucketList.query
+    if request.args.get('q'):
+        return BucketList.query.filter(BucketList.name.contains(
+            request.args.get('q')))
+    else:
+        return BucketList.query
 
 
 @api.route('/bucketlists/<int:id>', methods=['GET'])

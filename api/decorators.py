@@ -1,6 +1,6 @@
 import functools
 
-from flask import jsonify, request, url_for
+from flask import current_app, jsonify, request, url_for
 
 
 def json(f):
@@ -24,36 +24,43 @@ def json(f):
     return wrapped
 
 
-def paginate(max_per_page=100):
+def paginate():
     def decorator(f):
         @functools.wraps(f)
         def wrapped(*args, **kwargs):
-            import pdb; pdb.set_trace()
+            # get the number of the page to be displayed from URL
             page = request.args.get('page', 1, type=int)
-            per_page = min(request.args.get('limit', max_per_page,
-                                            type=int), max_per_page)
+
+            # get the number of items to be displayed per page
+            limit = min(request.args.get(
+                'limit', current_app.config['DEFAULT_PER_PAGE'], type=int),
+                current_app.config['MAX_PER_PAGE'])
+
+            # get query, paginate the query and get content of query
             query = f(*args, **kwargs)
-            p = query.paginate(page, per_page)
-            content = p.items
-            pages = {'page': page, 'per_page': per_page,
-                     'total': p.total, 'pages': p.pages}
-            if p.has_prev:
-                pages['prev'] = url_for(request.endpoint, page=p.prev_num,
-                                        per_page=per_page,
+            pagination = query.paginate(page, limit)
+            content = pagination.items
+
+            # prepare the meta portion of the json response
+            pages = {'page': page, 'limit': limit,
+                     'total': pagination.total, 'pages': pagination.pages}
+            if pagination.has_prev:
+                pages['prev'] = url_for(request.endpoint,
+                                        page=pagination.prev_num, limit=limit,
                                         _external=True, **kwargs)
             else:
                 pages['prev'] = None
-            if p.has_next:
-                pages['next'] = url_for(request.endpoint, page=p.next_num,
-                                        per_page=per_page,
+            if pagination.has_next:
+                pages['next'] = url_for(request.endpoint,
+                                        page=pagination.next_num, limit=limit,
                                         _external=True, **kwargs)
             else:
                 pages['next'] = None
             pages['first'] = url_for(request.endpoint, page=1,
-                                     per_page=per_page, _external=True,
+                                     limit=limit, _external=True,
                                      **kwargs)
-            pages['last'] = url_for(request.endpoint, pages=p.pages,
-                                    per_page=per_page, _external=True,
+            pages['last'] = url_for(request.endpoint, pages=pagination.pages,
+                                    limit=limit, _external=True,
                                     **kwargs)
             return jsonify({
                 'meta': pages,
