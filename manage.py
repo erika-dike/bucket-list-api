@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-from flask.ext.script import Manager, prompt_bool
+from flask.ext.script import Manager, prompt_bool, Server
 from flask.ext.migrate import Migrate, MigrateCommand
+from OpenSSL import SSL
 
 from api.app import create_app
 from api.models import User, BucketList, BucketListItem, db
@@ -10,6 +11,7 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 
 manager.add_command('db', MigrateCommand)
+manager.add_command('runserver', Server(ssl_context=('2_nazzyandfamz.com.crt', 'ssl.key')))
 
 
 @manager.command

@@ -3,3 +3,9 @@
 
 # temp
 tests/
+api/*.pyc
+api/v1_0/*.pyc
+
+# ssl related
+ssl.csr
+ssl.key.org
