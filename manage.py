@@ -1,3 +1,7 @@
+"""
+Contains scripts to manage the application
+"""
+
 #!/usr/bin/env python
 from flask.ext.script import Manager, prompt_bool, Server
 from flask.ext.migrate import Migrate, MigrateCommand
@@ -11,7 +15,8 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 
 manager.add_command('db', MigrateCommand)
-manager.add_command('runserver', Server(ssl_context=('2_nazzyandfamz.com.crt', 'ssl.key')))
+manager.add_command('runserver', Server(ssl_context=(
+    '2_nazzyandfamz.com.crt', 'ssl.key')))
 
 
 @manager.command
