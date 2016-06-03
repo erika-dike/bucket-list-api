@@ -21,7 +21,7 @@ def create_app(config_name):
     db.init_app(app)
 
     # register base route
-    from api.v1_0.api import api as api_blueprint
+    from api.v1_0.api_init import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1.0')
 
     return app

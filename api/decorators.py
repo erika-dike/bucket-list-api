@@ -4,7 +4,7 @@ Decorators for the API
 
 import functools
 
-from flask import current_app, jsonify, request, url_for
+from flask import current_app, jsonify, request, url_for, wrappers
 
 
 def json(f):
@@ -14,10 +14,18 @@ def json(f):
         rv = f(*args, **kwargs)
         status_or_headers = None
         headers = None
+
+        # extract status code and any additional headers
         if isinstance(rv, tuple):
             rv, status_or_headers, headers = rv + (None,) * (3 - len(rv))
         if isinstance(status_or_headers, (dict, list)):
             headers, status_or_headers = status_or_headers, None
+
+        # return result if an error occurred
+        if isinstance(rv, wrappers.Response) and rv.status_code > 300:
+            return rv
+
+        # convert result to json and return
         if not isinstance(rv, dict):
             rv = rv.to_json()
         rv = jsonify(rv)

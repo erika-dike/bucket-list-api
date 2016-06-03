@@ -53,7 +53,7 @@ class User(db.Model):
     def to_json(self):
         return {
             'url': self.get_url(),
-            'name': self.name
+            'name': self.username
         }
 
     def from_json(self, json):

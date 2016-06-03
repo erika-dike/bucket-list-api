@@ -2,9 +2,8 @@ import datetime
 
 from flask import g, request
 
-import errors
 from ..auth import auth
-from api import api
+from api_init import api
 from ..decorators import json, paginate
 from ..models import db, BucketList, BucketListItem
 
@@ -116,7 +115,7 @@ def create_bucketlist_item(id):
 def get_bucketlist_item(id, item_id):
     """
     Returns a bucketlist item
-    
+
     Args:
         id -- the bucketlist identifier
         item_id -- the bucketlist item identifier

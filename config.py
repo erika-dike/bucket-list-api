@@ -1,5 +1,5 @@
 """
-Configuration settings for the Bucket List API
+Settings for the Bucket List API
 """
 
 
