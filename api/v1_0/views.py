@@ -31,12 +31,13 @@ def create_bucketlist():
 @auth.login_required
 @paginate()
 def get_bucketlists():
-    """Returns all bucketlists"""
+    """Returns all bucketlists belonging to calling user"""
+    import pdb; pdb.set_trace()
     if request.args.get('q'):
-        return BucketList.query.filter(BucketList.name.contains(
-            request.args.get('q')))
+        return BucketList.query.filter_by(creator_id=g.user.id).filter(
+            BucketList.name.contains(request.args.get('q')))
     else:
-        return BucketList.query
+        return BucketList.query.filter_by(creator_id=g.user.id)
 
 
 @api.route('/bucketlists/<int:id>', methods=['GET'])
@@ -82,7 +83,7 @@ def delete_bucketlist(id):
     bucketlist = BucketList.query.get_or_404(id)
     db.session.delete(bucketlist)
     db.session.commit()
-    return {'result': True}
+    return {'result': "Successful"}
 
 
 @api.route('/bucketlists/<int:id>/items/', methods=['POST'])
@@ -161,4 +162,4 @@ def delete_bucketlist_item(id, item_id):
     bucketlist_item = BucketListItem.query.get_or_404(item_id)
     db.session.delete(bucketlist_item)
     db.session.commit()
-    return {'result': True}
+    return {'result': "Successful"}
