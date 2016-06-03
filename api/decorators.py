@@ -1,9 +1,14 @@
+"""
+Decorators for the API
+"""
+
 import functools
 
 from flask import current_app, jsonify, request, url_for
 
 
 def json(f):
+    """Modifies passed in function to return pretty printed JSON"""
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
         rv = f(*args, **kwargs)
@@ -25,6 +30,7 @@ def json(f):
 
 
 def paginate():
+    """Paginates the result of passed in functions and returns as JSON"""
     def decorator(f):
         @functools.wraps(f)
         def wrapped(*args, **kwargs):

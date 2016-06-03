@@ -1,4 +1,4 @@
-from flask import g, jsonify, request, url_for
+from flask import g, request
 
 from api import api
 from ..auth import auth
@@ -11,12 +11,14 @@ import errors
 @auth.login_required
 @json
 def login():
+    """Returns an authentication token"""
     return {'token': g.user.generate_auth_token()}
 
 
 @api.route('/auth/register', methods=['POST'])
-# @json
+@json
 def register():
+    """Creates a new user and saves user to database"""
     username = request.json.get('username')
     password = request.json.get('password')
     # user = User().from_json(request.json)
@@ -33,9 +35,5 @@ def register():
 @api.route('/users/<int:id>', methods=['GET'])
 @json
 def get_user(id):
+    """Returns a user"""
     return User.query.get_or_404(id)
-
-
-@api.route('/auth/hello')
-def index():
-    return "hello, world!"
