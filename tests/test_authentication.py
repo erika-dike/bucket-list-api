@@ -35,8 +35,8 @@ class TestAuthentication(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        parent_dir = os.path.dirname(os.getcwd())
-        os.remove(parent_dir + '/bucketlistdb-test.sqlite')
+        pwd = os.getcwd()
+        os.remove(pwd + '/bucketlistdb-test.sqlite')
 
     def test_api_requires_auth(self):
         response = self.client.get(url_for('api.get_bucketlists'),

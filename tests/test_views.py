@@ -66,8 +66,8 @@ class TestAPI(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        parent_dir = os.path.dirname(os.getcwd())
-        os.remove(parent_dir + '/bucketlistdb-test.sqlite')
+        pwd = os.getcwd()
+        os.remove(pwd + '/bucketlistdb-test.sqlite')
 
     def get_token(self):
         """Calls the login function and returns the token generated"""
