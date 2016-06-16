@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/andela-cdike/bucket-list-api.svg?branch=develop)](https://travis-ci.org/andela-cdike/bucket-list-api)
-[![Build Status](https://travis-ci.org/andela-cdike/bucket-list-api.svg?branch=master)](https://travis-ci.org/andela-cdike/bucket-list-api)
+[![Coverage Status](https://coveralls.io/repos/github/andela-cdike/bucket-list-api/badge.svg?branch=develop)](https://coveralls.io/github/andela-cdike/bucket-list-api?branch=develop)
 
 
 ## Bucket List API
