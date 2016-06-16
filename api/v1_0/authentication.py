@@ -39,6 +39,7 @@ def register():
 
 
 @api.route('/users/<int:id>', methods=['GET'])
+@auth.login_required
 @json
 def get_user(id):
     """Returns a user"""

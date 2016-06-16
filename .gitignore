@@ -1,8 +1,8 @@
 # Byte-compiled/optimized
 *.pyc
 
-# temp
-tests/
+# .pyc files within folders
+tests/*.pyc
 api/*.pyc
 api/v1_0/*.pyc
 

@@ -4,11 +4,14 @@ Decorators for the API
 
 import functools
 
-from flask import current_app, jsonify, request, url_for, wrappers
+from flask import current_app, g, jsonify, request, url_for, wrappers
+
+from . import errors
+from .models import BucketList
 
 
 def json(f):
-    """Modifies passed in function to return pretty printed JSON"""
+    """Modifies result of passed in function to return pretty printed JSON"""
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
         rv = f(*args, **kwargs)
@@ -34,6 +37,18 @@ def json(f):
         if headers is not None:
             rv.headers.extend(headers)
         return rv
+    return wrapped
+
+
+def authorized(f):
+    """Verifies that user is authorized to access resource"""
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+        if BucketList.query.get_or_404(kwargs['id']).creator_id == g.user.id:
+            return f(*args, **kwargs)
+        else:
+            return errors.forbidden(
+                "You do not have permission to access this resource")
     return wrapped
 
 

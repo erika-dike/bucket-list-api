@@ -1,9 +1,6 @@
-from datetime import datetime
-
 from flask import current_app, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.exceptions import NotFound
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from errors import ValidationError
@@ -55,14 +52,6 @@ class User(db.Model):
             'url': self.get_url(),
             'name': self.username
         }
-
-    def from_json(self, json):
-        try:
-            self.username = json['username']
-            self.password_hash = json['password']
-        except KeyError as e:
-            raise ValidationError('Missing: ' + e.args[0])
-        return self
 
 
 class BucketList(db.Model):
@@ -132,5 +121,8 @@ class BucketListItem(db.Model):
         try:
             self.name = json['name']
         except KeyError as e:
-            raise ValidationError('Invalid name: missing ' + e.args[0])
+            if self.name:
+                self.done = json['done']
+            else:
+                raise ValidationError('Invalid name: missing ' + e.args[0])
         return self

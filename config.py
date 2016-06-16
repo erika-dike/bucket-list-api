@@ -25,6 +25,7 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(
         basedir, 'bucketlistdb-test.sqlite')
+    SERVER_NAME = 'localhost:5000'
 
 
 class ProductionConfig(Config):
