@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, g
 from ..errors import ValidationError, bad_request, not_found
 
 api = Blueprint('api', __name__)

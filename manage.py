@@ -22,14 +22,18 @@ manager.add_command('runserver', Server(ssl_context=(
 @manager.command
 def create_db():
     """Creates database tables from sqlalchemy models"""
-    db.create_all()
+    app = create_app('default')
+    with app.app_context():
+        db.create_all()
 
 
 @manager.command
 def drop_db():
     """Drops database tables"""
     if prompt_bool("Are you sure you want to lose all your data?"):
-        db.drop_all()
+        app = create_app('default')
+        with app.app_context():
+            db.drop_all()
 
 
 @manager.shell

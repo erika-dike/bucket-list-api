@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import current_app, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,15 +9,40 @@ from errors import ValidationError
 
 db = SQLAlchemy()
 
+# date and time format
+fmt = "%A, %d. %B %Y %I:%M%p"
 
-class User(db.Model):
+
+class Base(db.Model):
+    """Base model for the database"""
+    __abstract__ = True
+
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+
+    # get time so date created and modified have same exact time
+    now = datetime.now()
+
+    date_created = db.Column(db.DateTime, default=now)
+    date_modified = db.Column(db.DateTime, default=now,
+                              onupdate=now)
+
+    def save(self):
+        """Saves instance object to database"""
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        """Deletes instance object from database"""
+        db.session.delete(self)
+        db.session.commit()
+
+
+class User(Base):
     """Users table"""
 
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True)
     password_hash = db.Column(db.String(128))
-    date_of_birth = db.Column(db.DateTime)
     bucketlist = db.relationship('BucketList', backref=db.backref(
         'bucketlist', lazy='joined'), cascade="all, delete-orphan",
         lazy='dynamic')
@@ -54,21 +81,22 @@ class User(db.Model):
         }
 
 
-class BucketList(db.Model):
+class BucketList(Base):
     """Bucket list table"""
 
     __tablename__ = 'bucketlist'
-    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25), index=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     items = db.relationship('BucketListItem', backref=db.backref(
         'bucketlist_item', lazy='joined'), cascade='all, delete-orphan',
         lazy='dynamic')
-    date_created = db.Column(db.DateTime)
-    date_modified = db.Column(db.DateTime)
 
     def get_url(self):
         return url_for('api.get_bucketlist', id=self.id, _external=True)
+
+    @staticmethod
+    def get_bucketlists_url():
+        return url_for('api.get_bucketlists', _external=True)
 
     def to_json(self):
         items = [item.to_json() for item in self.items]
@@ -76,8 +104,8 @@ class BucketList(db.Model):
             'id': self.id,
             'name': self.name,
             'items': items,
-            'date_created': self.date_created,
-            'date_modified': self.date_modified,
+            'date_created': self.date_created.strftime(fmt),
+            'date_modified': self.date_modified.strftime(fmt),
             'created_by': User.query.get(self.creator_id).username,
             'bucketlist_url': self.get_url()
         }
@@ -90,14 +118,11 @@ class BucketList(db.Model):
         return self
 
 
-class BucketListItem(db.Model):
+class BucketListItem(Base):
     """Bucket list item table"""
 
     __tablename__ = 'bucketlist_item'
-    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), index=True)
-    date_created = db.Column(db.DateTime)
-    date_modified = db.Column(db.DateTime)
     done = db.Column(db.Boolean, default=False)
     bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucketlist.id'))
 
@@ -111,18 +136,20 @@ class BucketListItem(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'date_created': self.date_created,
-            'date_modified': self.date_modified,
+            'date_created': self.date_created.strftime(fmt),
+            'date_modified': self.date_modified.strftime(fmt),
             'done': self.done,
             'item_url': self.get_url()
         }
 
     def from_json(self, json):
-        try:
+        if 'done' in json:
+            done = json['done'].lower()
+            self.done = bool(1 if done == 'true' else 0)
+        if 'name' in json:
             self.name = json['name']
-        except KeyError as e:
-            if self.name:
-                self.done = json['done']
-            else:
-                raise ValidationError('Invalid name: missing ' + e.args[0])
+        if not self.name:
+            raise ValidationError(
+                'Invalid argument {}. Allowed: [name] and/or [done]'.
+                format(json.keys()))
         return self

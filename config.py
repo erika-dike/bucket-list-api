@@ -12,6 +12,7 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(
         basedir, 'bucketlistdb.sqlite')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     USE_TOKEN_AUTH = True
     DEFAULT_PER_PAGE = 20
     MAX_PER_PAGE = 100

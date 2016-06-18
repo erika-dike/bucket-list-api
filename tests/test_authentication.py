@@ -101,6 +101,13 @@ class TestAuthentication(unittest.TestCase):
             headers=create_api_headers('rikky_dyke', 'password'))
         self.assertTrue(response.status_code == 200)
 
+    def test_that_invalid_routes_return_json(self):
+        response = self.client.get(
+            'auth/bucketlists/',
+            headers=create_api_headers('rikky_dyke', 'password'))
+        data = json.loads(response.get_data(as_text=True))
+        self.assertTrue(response.status_code == 404)
+        self.assertTrue(data['message'] == '404: Not Found')
 
 if __name__ == "__main__":
     unittest.main()

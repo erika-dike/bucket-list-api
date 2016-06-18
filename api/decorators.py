@@ -11,18 +11,18 @@ from .models import BucketList
 
 
 def json(f):
-    """Modifies result of passed in function to return pretty printed JSON"""
+    """
+    Modifies result of passed in function to return pretty printed JSON
+    Courtesy - Miguel Grinberg
+    """
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
         rv = f(*args, **kwargs)
-        status_or_headers = None
-        headers = None
+        status = None
 
         # extract status code and any additional headers
         if isinstance(rv, tuple):
-            rv, status_or_headers, headers = rv + (None,) * (3 - len(rv))
-        if isinstance(status_or_headers, (dict, list)):
-            headers, status_or_headers = status_or_headers, None
+            rv, status = rv
 
         # return result if an error occurred
         if isinstance(rv, wrappers.Response) and rv.status_code > 300:
@@ -32,10 +32,8 @@ def json(f):
         if not isinstance(rv, dict):
             rv = rv.to_json()
         rv = jsonify(rv)
-        if status_or_headers is not None:
-            rv.status_code = status_or_headers
-        if headers is not None:
-            rv.headers.extend(headers)
+        if status is not None:
+            rv.status_code = status
         return rv
     return wrapped
 
@@ -53,7 +51,10 @@ def authorized(f):
 
 
 def paginate():
-    """Paginates the result of passed in functions and returns as JSON"""
+    """
+    Paginates the result of passed in functions and returns as JSON
+    courtesy - Miguel Grinberg
+    """
     def decorator(f):
         @functools.wraps(f)
         def wrapped(*args, **kwargs):
@@ -79,12 +80,14 @@ def paginate():
                                         _external=True, **kwargs)
             else:
                 pages['prev'] = None
+
             if pagination.has_next:
                 pages['next'] = url_for(request.endpoint,
                                         page=pagination.next_num, limit=limit,
                                         _external=True, **kwargs)
             else:
                 pages['next'] = None
+
             pages['first'] = url_for(request.endpoint, page=1,
                                      limit=limit, _external=True,
                                      **kwargs)

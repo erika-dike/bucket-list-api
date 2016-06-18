@@ -4,7 +4,7 @@ from api_init import api
 from ..auth import auth, verify_password
 from ..decorators import json
 from .. import errors
-from ..models import db, User
+from ..models import User, BucketList
 
 
 @api.route('/auth/login', methods=['POST'])
@@ -15,9 +15,11 @@ def login():
     password = request.json.get('password')
 
     if verify_password(username, password):
-        return {'token': g.user.generate_auth_token()}
-    else:
-        return errors.unauthorized('Your login credentials are incorrect')
+        return {
+            'Token': g.user.generate_auth_token(),
+            'url': BucketList.get_bucketlists_url()
+        }
+    return errors.unauthorized('Your login credentials are incorrect')
 
 
 @api.route('/auth/register', methods=['POST'])
@@ -33,9 +35,8 @@ def register():
     if User.query.filter_by(username=username).first() is not None:
         return errors.bad_request("That username is already taken")
     user = User(username=username, password=password)
-    db.session.add(user)
-    db.session.commit()
-    return user, 201, {'Location': user.get_url()}
+    user.save()
+    return user, 201
 
 
 @api.route('/users/<int:id>', methods=['GET'])

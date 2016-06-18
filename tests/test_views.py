@@ -76,7 +76,7 @@ class TestAPI(unittest.TestCase):
             headers=create_api_headers('rikky_dyke', 'password'),
             data=json.dumps({'username': 'rikky_dyke',
                              'password': 'password'}))
-        token = json.loads(response.data)['token']
+        token = json.loads(response.data)['Token']
         return token
 
     def test_get_bucketlists(self):
@@ -269,12 +269,12 @@ class TestAPI(unittest.TestCase):
         self.assertTrue(response.status_code == 200)
         self.assertTrue(data['name'] == 'Reach a state of balance')
 
-    def test_edit_bucketlist_items_done_property(self):
+    def test_edit_bucketlist_items_done_attribute(self):
         token = self.get_token()
         response = self.client.put(
             url_for('api.edit_bucketlist_item', id=1, item_id=1),
             headers=create_api_headers(token, ''),
-            data=json.dumps({'done': True}))
+            data=json.dumps({'done': 'True'}))
         data = json.loads(response.get_data(as_text=True))
         self.assertTrue(response.status_code == 200)
         self.assertEquals(data['done'], True)
