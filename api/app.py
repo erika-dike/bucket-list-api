@@ -35,8 +35,8 @@ def create_app(config_name, **kwargs):
     db.init_app(app)
 
     # register base route
-    from api.v1_0.api_init import api as api_blueprint
-    app.register_blueprint(api_blueprint, url_prefix='/api/v1.0')
+    from api.v1.api_init import api as api_blueprint
+    app.register_blueprint(api_blueprint, url_prefix='/api/v1')
 
     for code in default_exceptions.iterkeys():
         app.error_handler_spec[None][code] = make_json_error
