@@ -6,6 +6,7 @@ from flask import jsonify
 
 
 class ValidationError(ValueError):
+    """Custom Exception"""
     pass
 
 

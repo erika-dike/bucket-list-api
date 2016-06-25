@@ -64,6 +64,7 @@ class User(Base):
 
     @staticmethod
     def verify_auth_token(token):
+        """"Verify authentication token"""
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
@@ -72,9 +73,11 @@ class User(Base):
         return User.query.get(data['id'])
 
     def get_url(self):
+        """Get the url for this instance"""
         return url_for('api.get_user', id=self.id, _external=True)
 
     def to_json(self):
+        """Packages instance as JSON object"""
         return {
             'url': self.get_url(),
             'name': self.username
@@ -92,6 +95,7 @@ class BucketList(Base):
         lazy='dynamic')
 
     def get_url(self):
+        """Get the url for this instance"""
         return url_for('api.get_bucketlist', id=self.id, _external=True)
 
     @staticmethod
@@ -99,6 +103,7 @@ class BucketList(Base):
         return url_for('api.get_bucketlists', _external=True)
 
     def to_json(self):
+        """Packages instance as JSON object"""
         items = [item.to_json() for item in self.items]
         return {
             'id': self.id,
@@ -111,6 +116,7 @@ class BucketList(Base):
         }
 
     def from_json(self, json):
+        """Instantiates instance with data from JSON object"""
         try:
             self.name = json['name']
         except KeyError as e:
@@ -127,12 +133,14 @@ class BucketListItem(Base):
     bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucketlist.id'))
 
     def get_url(self):
+        """Get the url for this intance"""
         return url_for('api.get_bucketlist_item',
                        id=self.bucketlist_id,
                        item_id=self.id,
                        _external=True)
 
     def to_json(self):
+        """Packages instance as JSON object"""
         return {
             'id': self.id,
             'name': self.name,
@@ -143,6 +151,7 @@ class BucketListItem(Base):
         }
 
     def from_json(self, json):
+        """Instantiates instance with data from JSON object"""
         if 'done' in json:
             done = json['done'].lower()
             self.done = bool(1 if done == 'true' else 0)

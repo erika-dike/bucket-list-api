@@ -8,6 +8,7 @@ auth = HTTPBasicAuth()
 
 @auth.verify_password
 def verify_password(username_or_token, password):
+    """Verifies login credentials supplied are valid"""
     # first try to authenticate by token
     user = User.verify_auth_token(username_or_token)
     if not user:

@@ -1,4 +1,4 @@
-from flask import g, jsonify, request
+from flask import g, request
 
 from api_init import api
 from ..auth import auth, verify_password

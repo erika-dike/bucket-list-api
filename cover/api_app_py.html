@@ -153,8 +153,8 @@
 <p id="t35" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">db</span><span class="op">.</span><span class="nam">init_app</span><span class="op">(</span><span class="nam">app</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t36" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t37" class="pln">&nbsp; &nbsp; <span class="com"># register base route</span><span class="strut">&nbsp;</span></p>
-<p id="t38" class="stm run hide_run">&nbsp; &nbsp; <span class="key">from</span> <span class="nam">api</span><span class="op">.</span><span class="nam">v1_0</span><span class="op">.</span><span class="nam">api_init</span> <span class="key">import</span> <span class="nam">api</span> <span class="key">as</span> <span class="nam">api_blueprint</span><span class="strut">&nbsp;</span></p>
-<p id="t39" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">app</span><span class="op">.</span><span class="nam">register_blueprint</span><span class="op">(</span><span class="nam">api_blueprint</span><span class="op">,</span> <span class="nam">url_prefix</span><span class="op">=</span><span class="str">&#39;/api/v1.0&#39;</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t38" class="stm run hide_run">&nbsp; &nbsp; <span class="key">from</span> <span class="nam">api</span><span class="op">.</span><span class="nam">v1</span><span class="op">.</span><span class="nam">api_init</span> <span class="key">import</span> <span class="nam">api</span> <span class="key">as</span> <span class="nam">api_blueprint</span><span class="strut">&nbsp;</span></p>
+<p id="t39" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">app</span><span class="op">.</span><span class="nam">register_blueprint</span><span class="op">(</span><span class="nam">api_blueprint</span><span class="op">,</span> <span class="nam">url_prefix</span><span class="op">=</span><span class="str">&#39;/api/v1&#39;</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t40" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t41" class="stm run hide_run">&nbsp; &nbsp; <span class="key">for</span> <span class="nam">code</span> <span class="key">in</span> <span class="nam">default_exceptions</span><span class="op">.</span><span class="nam">iterkeys</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t42" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">app</span><span class="op">.</span><span class="nam">error_handler_spec</span><span class="op">[</span><span class="nam">None</span><span class="op">]</span><span class="op">[</span><span class="nam">code</span><span class="op">]</span> <span class="op">=</span> <span class="nam">make_json_error</span><span class="strut">&nbsp;</span></p>
@@ -170,7 +170,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.org">coverage.py v4.0.3</a>,
-            created at 2016-06-18 15:49
+            created at 2016-06-24 16:54
         </p>
     </div>
 </div>
