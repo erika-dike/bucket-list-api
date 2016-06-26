@@ -96,4 +96,4 @@ curl -u eyJhbGciOiJIUzI1NiIsImV4cCI6MTQ2NDg2NDI3MiwiaWF0IjoxNDY0ODYwNjcyfQ.eyJpZ
 2) Run ```python manage.py test``` to run test and check coverage
 
 ### <a name="project-demo"></a>Project Demo
-Click [here](https://github.com/andela-cdike) to view the project demo
+Click [here](https://www.youtube.com/watch?v=yYiFXGaXP6g) to view the project demo
