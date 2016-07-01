@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import current_app, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import BadSignature, SignatureExpired
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from errors import ValidationError
@@ -44,7 +45,7 @@ class User(Base):
     username = db.Column(db.String(64), index=True)
     password_hash = db.Column(db.String(128))
     bucketlist = db.relationship('BucketList', backref=db.backref(
-        'bucketlist', lazy='joined'), cascade="all, delete-orphan",
+        'user', lazy='joined'), cascade="all, delete-orphan",
         lazy='dynamic')
 
     @property
@@ -68,8 +69,10 @@ class User(Base):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
-            return None
+        except SignatureExpired:
+            raise ValidationError('Expired Token')
+        except BadSignature:
+            raise ValidationError('Invalid Token')
         return User.query.get(data['id'])
 
     def get_url(self):
@@ -91,7 +94,7 @@ class BucketList(Base):
     name = db.Column(db.String(25), index=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     items = db.relationship('BucketListItem', backref=db.backref(
-        'bucketlist_item', lazy='joined'), cascade='all, delete-orphan',
+        'bucketlist', lazy='joined'), cascade='all, delete-orphan',
         lazy='dynamic')
 
     def get_url(self):

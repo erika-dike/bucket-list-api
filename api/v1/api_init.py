@@ -3,7 +3,6 @@ from ..errors import ValidationError, bad_request, not_found
 
 api = Blueprint('api', __name__)
 
-
 @api.errorhandler(ValidationError)
 def validation_error(error):
     return bad_request(error.args[0])

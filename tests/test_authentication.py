@@ -41,7 +41,8 @@ class TestAuthentication(unittest.TestCase):
     def test_api_requires_auth(self):
         response = self.client.get(url_for('api.get_bucketlists'),
                                    content_type='application/json')
-        self.assertTrue(response.status_code == 401)
+        print response
+        self.assertEquals(response.status_code, 401)
 
     def test_registration(self):
         """Tests user registration"""
@@ -49,7 +50,7 @@ class TestAuthentication(unittest.TestCase):
             url_for('api.register'),
             headers=create_api_headers('rikky_dyke', 'password'),
             data=json.dumps({'username': 'itachi', 'password': 'password'}))
-        self.assertTrue(response.status_code == 201)
+        self.assertEquals(response.status_code, 201)
 
     def test_registration_refuses_short_password(self):
         """
@@ -59,7 +60,7 @@ class TestAuthentication(unittest.TestCase):
             url_for('api.register'),
             headers=create_api_headers('rikky_dyke', 'password'),
             data=json.dumps({'username': 'itachi', 'password': 'pass'}))
-        self.assertTrue(response.status_code == 400)
+        self.assertEquals(response.status_code, 400)
 
     def test_registration_refuses_blank_username(self):
         """Tests that blank usernames are rejected"""
@@ -67,7 +68,7 @@ class TestAuthentication(unittest.TestCase):
             url_for('api.register'),
             headers=create_api_headers('rikky_dyke', 'password'),
             data=json.dumps({'username': '', 'password': 'pass'}))
-        self.assertTrue(response.status_code == 400)
+        self.assertEquals(response.status_code, 400)
 
     def test_registration_of_non_unique_usernames(self):
         """Tests that api rejects usernames that are already taken"""
@@ -76,7 +77,7 @@ class TestAuthentication(unittest.TestCase):
             headers=create_api_headers('rikky_dyke', 'password'),
             data=json.dumps({'username': 'rikky_dyke',
                              'password': 'uchiha_madara'}))
-        self.assertTrue(response.status_code == 400)
+        self.assertEquals(response.status_code, 400)
 
     def test_login(self):
         """Tests that login works"""
@@ -85,7 +86,7 @@ class TestAuthentication(unittest.TestCase):
             headers=create_api_headers('rikky_dyke', 'password'),
             data=json.dumps({'username': 'rikky_dyke',
                              'password': 'password'}))
-        self.assertTrue(response.status_code == 200)
+        self.assertEquals(response.status_code, 200)
 
     def test_login_invalid_user(self):
         """Testst that login function rejects invalid users"""
@@ -93,21 +94,27 @@ class TestAuthentication(unittest.TestCase):
             url_for('api.login'),
             headers=create_api_headers('rikky_dyke', 'password'),
             data=json.dumps({'username': 'rikimaru', 'password': 'senju'}))
-        self.assertTrue(response.status_code == 401)
+        self.assertEquals(response.status_code, 401)
 
-    def test_get_single_bucketlist(self):
+    def test_get_user(self):
         response = self.client.get(
             url_for('api.get_user', id=1),
             headers=create_api_headers('rikky_dyke', 'password'))
-        self.assertTrue(response.status_code == 200)
+        self.assertEquals(response.status_code, 200)
 
     def test_that_invalid_routes_return_json(self):
         response = self.client.get(
             'auth/bucketlists/',
             headers=create_api_headers('rikky_dyke', 'password'))
         data = json.loads(response.get_data(as_text=True))
-        self.assertTrue(response.status_code == 404)
-        self.assertTrue(data['message'] == '404: Not Found')
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(data['message'], '404: Not Found')
+
+    def test_invalid_token_is_rejected(self):
+        response = self.client.get(
+            url_for('api.get_bucketlists'),
+            headers=create_api_headers('token', ''))
+        self.assertEquals(response.status_code, 400)
 
 if __name__ == "__main__":
     unittest.main()

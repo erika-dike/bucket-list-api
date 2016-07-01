@@ -122,7 +122,7 @@
 <p id="t1" class="stm run hide_run"><span class="key">from</span> <span class="nam">flask</span> <span class="key">import</span> <span class="nam">g</span><span class="op">,</span> <span class="nam">request</span><span class="strut">&nbsp;</span></p>
 <p id="t2" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t3" class="stm run hide_run"><span class="key">from</span> <span class="nam">api_init</span> <span class="key">import</span> <span class="nam">api</span><span class="strut">&nbsp;</span></p>
-<p id="t4" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="op">.</span><span class="nam">auth</span> <span class="key">import</span> <span class="nam">auth</span><span class="op">,</span> <span class="nam">verify_password</span><span class="strut">&nbsp;</span></p>
+<p id="t4" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="op">.</span><span class="nam">auth</span> <span class="key">import</span> <span class="nam">basic_auth</span><span class="op">,</span> <span class="nam">verify_password</span><span class="strut">&nbsp;</span></p>
 <p id="t5" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="op">.</span><span class="nam">decorators</span> <span class="key">import</span> <span class="nam">json</span><span class="strut">&nbsp;</span></p>
 <p id="t6" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="op">.</span> <span class="key">import</span> <span class="nam">errors</span><span class="strut">&nbsp;</span></p>
 <p id="t7" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">User</span><span class="op">,</span> <span class="nam">BucketList</span><span class="strut">&nbsp;</span></p>
@@ -161,7 +161,7 @@
 <p id="t40" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t41" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t42" class="stm run hide_run"><span class="op">@</span><span class="nam">api</span><span class="op">.</span><span class="nam">route</span><span class="op">(</span><span class="str">&#39;/users/&lt;int:id&gt;&#39;</span><span class="op">,</span> <span class="nam">methods</span><span class="op">=</span><span class="op">[</span><span class="str">&#39;GET&#39;</span><span class="op">]</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t43" class="stm run hide_run"><span class="op">@</span><span class="nam">auth</span><span class="op">.</span><span class="nam">login_required</span><span class="strut">&nbsp;</span></p>
+<p id="t43" class="stm run hide_run"><span class="op">@</span><span class="nam">basic_auth</span><span class="op">.</span><span class="nam">login_required</span><span class="strut">&nbsp;</span></p>
 <p id="t44" class="stm run hide_run"><span class="op">@</span><span class="nam">json</span><span class="strut">&nbsp;</span></p>
 <p id="t45" class="pln"><span class="key">def</span> <span class="nam">get_user</span><span class="op">(</span><span class="nam">id</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t46" class="pln">&nbsp; &nbsp; <span class="str">&quot;&quot;&quot;Returns a user&quot;&quot;&quot;</span><span class="strut">&nbsp;</span></p>
@@ -176,7 +176,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.org">coverage.py v4.0.3</a>,
-            created at 2016-06-25 21:29
+            created at 2016-06-30 22:50
         </p>
     </div>
 </div>

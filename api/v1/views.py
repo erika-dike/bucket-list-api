@@ -1,6 +1,6 @@
 from flask import g, request
 
-from ..auth import auth
+from ..auth import token_auth
 from api_init import api
 from ..decorators import json, paginate, authorized
 from .. import errors
@@ -8,7 +8,7 @@ from ..models import BucketList, BucketListItem
 
 
 @api.route('/bucketlists/', methods=['POST'])
-@auth.login_required
+@token_auth.login_required
 @json
 def create_bucketlist():
     """Create a bucketlist and saves to database"""
@@ -19,7 +19,7 @@ def create_bucketlist():
 
 
 @api.route('/bucketlists/', methods=['GET'])
-@auth.login_required
+@token_auth.login_required
 @paginate()
 def get_bucketlists():
     """Returns all bucketlists belonging to calling user"""
@@ -31,9 +31,9 @@ def get_bucketlists():
 
 
 @api.route('/bucketlists/<int:id>', methods=['GET'])
-@auth.login_required
-@json
+@token_auth.login_required
 @authorized
+@json
 def get_bucketlist(id):
     """Returns a single bucketlist"""
     bucketlist = BucketList.query.get_or_404(id)
@@ -44,9 +44,9 @@ def get_bucketlist(id):
 
 
 @api.route('/bucketlists/<int:id>', methods=['PUT'])
-@auth.login_required
-@json
+@token_auth.login_required
 @authorized
+@json
 def edit_bucketlist(id):
     """
     Edit the name of a bucketlist
@@ -63,9 +63,9 @@ def edit_bucketlist(id):
 
 
 @api.route('/bucketlists/<int:id>', methods=['DELETE'])
-@auth.login_required
-@json
+@token_auth.login_required
 @authorized
+@json
 def delete_bucketlist(id):
     """
     Delete a bucketlist
@@ -81,9 +81,9 @@ def delete_bucketlist(id):
 
 
 @api.route('/bucketlists/<int:id>/items/', methods=['POST'])
-@auth.login_required
-@json
+@token_auth.login_required
 @authorized
+@json
 def create_bucketlist_item(id):
     """
     Add an item to a bucketlist
@@ -102,9 +102,9 @@ def create_bucketlist_item(id):
 
 
 @api.route('/bucketlists/<int:id>/items/<int:item_id>', methods=['GET'])
-@auth.login_required
-@json
+@token_auth.login_required
 @authorized
+@json
 def get_bucketlist_item(id, item_id):
     """
     Returns a bucketlist item
@@ -124,9 +124,9 @@ def get_bucketlist_item(id, item_id):
 
 
 @api.route('/bucketlists/<int:id>/items/<int:item_id>', methods=['PUT'])
-@auth.login_required
-@json
+@token_auth.login_required
 @authorized
+@json
 def edit_bucketlist_item(id, item_id):
     """
     Edit bucketlist item
@@ -147,9 +147,9 @@ def edit_bucketlist_item(id, item_id):
 
 
 @api.route('/bucketlists/<int:id>/items/<int:item_id>', methods=['DELETE'])
-@auth.login_required
-@json
+@token_auth.login_required
 @authorized
+@json
 def delete_bucketlist_item(id, item_id):
     """
     Delete a bucketlist item

@@ -1,7 +1,7 @@
 from flask import g, request
 
 from api_init import api
-from ..auth import auth, verify_password
+from ..auth import basic_auth, verify_password
 from ..decorators import json
 from .. import errors
 from ..models import User, BucketList
@@ -40,7 +40,7 @@ def register():
 
 
 @api.route('/users/<int:id>', methods=['GET'])
-@auth.login_required
+@basic_auth.login_required
 @json
 def get_user(id):
     """Returns a user"""

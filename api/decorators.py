@@ -17,24 +17,25 @@ def json(f):
     """
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-        rv = f(*args, **kwargs)
+        response = f(*args, **kwargs)
         status = None
 
-        # extract status code and any additional headers
-        if isinstance(rv, tuple):
-            rv, status = rv
+        # extract status code
+        if isinstance(response, tuple):
+            response, status = response
 
         # return result if an error occurred
-        if isinstance(rv, wrappers.Response) and rv.status_code > 300:
-            return rv
+        if isinstance(response, wrappers.Response) and \
+                response.status_code > 300:
+            return response
 
         # convert result to json and return
-        if not isinstance(rv, dict):
-            rv = rv.to_json()
-        rv = jsonify(rv)
+        if not isinstance(response, dict):
+            response = response.to_json()
+        response = jsonify(response)
         if status is not None:
-            rv.status_code = status
-        return rv
+            response.status_code = status
+        return response
     return wrapped
 
 
