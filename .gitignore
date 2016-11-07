@@ -1,0 +1,25 @@
+# Byte-compiled/optimized
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# .pyc files within folders
+tests/*.pyc
+api/*.pyc
+api/v1_0/*.pyc
+
+# ssl related
+ssl.csr
+ssl.key.org
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
